@@ -14,8 +14,6 @@ app.append(header)
 app.append(search)
 app.append(content)
 
-
-
 const weather = (data) => {
     const div = document.createElement('div')
     div.classList.add('condition')
