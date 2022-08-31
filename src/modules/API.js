@@ -71,15 +71,15 @@ const getCitiesList = async (city) => {
     }
 }
 
-const getWeatherData = async (coords) => {
+const getWeatherData = async (call) => {
     try{
-        if(!checkCache(coords, new Date())){
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${APIkey}&units=metric`)
+        if(!checkCache(call, new Date())){
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/${call.type}?lat=${call.lat}&lon=${call.lon}&appid=${APIkey}&units=metric`)
         const weatherData = await response.json()
-        addToCache(coords, weatherData)
+        addToCache(call, weatherData)
         return weatherData
         } else {
-            return getCachedData(coords)
+            return getCachedData(call)
         }
     } catch (err){
         console.log(err)

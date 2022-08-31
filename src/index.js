@@ -1,8 +1,6 @@
 import "./styles.css"
 import { UI } from  "./modules/UI"
 import { API } from "./modules/API"
-import { weatherUpdater } from "./modules/WeatherUpdater"
-
 
 UI.search.addEventListener('submit', async (e) => {
         e.preventDefault()
@@ -28,13 +26,13 @@ UI.search.addEventListener('submit', async (e) => {
 })
 
 const addListener = (element) => {
-    element.addEventListener('submit', (e) => {
+    element.addEventListener('submit', async (e) => {
         e.preventDefault()
         const data = new FormData(element) 
         const coord = JSON.parse(data.get('coords'))
         UI.replaceElement(element, UI.search)
-        getWeather(coord)
-    })
+        getWeather(coord, 'forecast')
+       })
     const cancel = document.getElementById('cancel')
     cancel.addEventListener('click', () =>{
         UI.replaceElement(element, UI.search)
@@ -42,8 +40,25 @@ const addListener = (element) => {
 }
 
 const getWeather = async (coord) => {
+    coord.type = 'weather'
     const weatherData = await API.getWeatherData(coord)
-    weatherUpdater.updateWeather(weatherData)
+    console.log(weatherData)
+    coord.type = 'forecast'
+    const forecast = await API.getWeatherData(coord)
+    console.log(forecast)
+    makeWeatherDiv(weatherData, 'weather')
+    makeWeatherDiv(forecast, 'forecast')
 }
 
-UI.weatherUIElements.forEach((f) => weatherUpdater.addSub(f))
+const makeWeatherDiv = (data, type) => {
+    if(document.getElementById(type)){
+        document.getElementById(type).remove()
+    }
+    let div
+    if(type === 'forecast'){
+        div = UI.createForecast(data)
+    } else if(type === 'weather'){
+        div = UI.createCurrentWeather(data)    
+    }
+    UI.content.append(div)
+}

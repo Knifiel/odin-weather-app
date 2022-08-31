@@ -2,3 +2,13 @@
   padding: 0;
   margin: 0;
 }
+#app{
+  display: flex;
+  flex-direction: column;
+  overflow-y: visible;
+}
+
+#header{
+display: flex;
+place-items: center;
+}

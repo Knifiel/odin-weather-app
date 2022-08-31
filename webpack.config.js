@@ -6,7 +6,8 @@ const config = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    assetModuleFilename: 'images/[hash][ext][query]'
   },
   module: {
     rules: [
@@ -21,6 +22,10 @@ const config = {
           'style-loader',
           'css-loader'
         ]
+      },
+      {
+        test: /\.(png|jp?eg|gif|svg)$/i,
+        type: 'asset/resource'
       }
     ]
   },
