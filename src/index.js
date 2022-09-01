@@ -49,10 +49,8 @@ const addListener = (element) => {
 const getWeather = async (coord) => {
     coord.type = 'weather'
     const weatherData = await API.getWeatherData(coord)
-    console.log(weatherData)
     coord.type = 'forecast'
     const forecast = await API.getWeatherData(coord)
-    console.log(forecast)
     makeWeatherDiv(weatherData, 'weather')
     makeWeatherDiv(forecast, 'forecast')
 }

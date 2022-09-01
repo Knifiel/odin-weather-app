@@ -21,7 +21,6 @@ recentAPIcalls.forEach((element, index) => {
 })
 }
 
-
 function stringifyCall(call){
     let tempCall = call
     if(tempCall instanceof Object === true){
@@ -31,8 +30,6 @@ function stringifyCall(call){
 }
 
 function checkCache(call){
-    console.log('Checking for data in cache:')
-    console.log(call)
     return recentAPIcalls.some((element) => element.call === stringifyCall(call))
 }
 
