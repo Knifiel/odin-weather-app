@@ -2,28 +2,35 @@ import "./styles.css"
 import { UI } from  "./modules/UI"
 import { API } from "./modules/API"
 
-UI.search.addEventListener('submit', async (e) => {
-        e.preventDefault()
-        const input = document.getElementById('input')
-        if(!UI.search.checkValidity()){
-            return
+UI.search.addEventListener('submit', async (e) => cityNameChecker(e))
+UI.search.addEventListener('input', (e) => {
+    e.preventDefault()
+    e.target.setCustomValidity('')
+}) 
+
+async function cityNameChecker(e){
+    const input = document.getElementById('input')
+    input.setCustomValidity('')
+    e.preventDefault()
+    if(!UI.search.checkValidity()){
+        return
+    }
+        try{
+        const formData = new FormData(UI.search)
+        const request = formData.get('input')
+        const citiesArr = await API.getCitiesList(request)
+        if(citiesArr.length !== 0){
+            const cityList = UI.cityChooser(citiesArr)
+            UI.replaceElement(UI.search, cityList)
+            addListener(cityList)
+        } else {
+        throw 'No cities with that name'
         }
-            try{
-            const formData = new FormData(UI.search)
-            const request = formData.get('input')
-            const citiesArr = await API.getCitiesList(request)
-            if(citiesArr.length !== 0){
-                const cityList = UI.cityChooser(citiesArr)
-                UI.replaceElement(UI.search, cityList)
-                addListener(cityList)
-            } else {
-            throw 'No cities with that name'
-            }
-            } catch (err) {
-                input.setCustomValidity(err)
-                UI.search.reportValidity()
-            }
-})
+        } catch (err) {
+            input.setCustomValidity(err)
+            UI.search.reportValidity()
+        }
+}
 
 const addListener = (element) => {
     element.addEventListener('submit', async (e) => {

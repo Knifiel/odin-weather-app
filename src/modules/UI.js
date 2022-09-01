@@ -16,8 +16,8 @@ content.id = 'content'
 const credit = makeCreditDiv()
 
 app.append(header)
-header.append(search)
 header.append(credit)
+header.append(search)
 app.append(content)
 
 function searchCitiesField(){
@@ -78,9 +78,17 @@ function replaceElement(target, newElement) {
 
 function createForecast(data){
     const div = document.createElement('div')
-    div.classList.add('forecast')
+    div.id = 'forecast'
+    const h = document.createElement('div')
+    h.classList.add('head')
+    const h2 = document.createElement('h2')
+    h2.textContent = "Weather forecast:"
+    h.appendChild(h2)
+    div.appendChild(h)
     const list = document.createElement('ul')
     div.appendChild(list)
+    const headers = forecastHeader()
+    list.appendChild(headers)
     data.list.forEach((forecast)=> {
         const li = document.createElement('li')
         makeWeatherElements(li, forecast)
@@ -89,9 +97,71 @@ function createForecast(data){
     return div
 }
 
+function forecastHeader(){
+    const li = document.createElement('li')
+    li.classList.add('headerLi')
+    const dateDiv = makeElement('div', 'date', 'Date')
+    li.appendChild(dateDiv)
+
+    const weatherDiv = makeElement('div', 'weather', "Weather")
+    li.appendChild(weatherDiv)
+
+    const cloudsDiv = makeElement('div', 'clouds', "Cloudiness")
+    li.appendChild(cloudsDiv)
+
+    const mainDiv = makeElement('div', 'main')
+    
+    const mainTemp = makeElement('span', 'temp', "Temperature")
+    const mainFeels = makeElement('span', 'tempFeelsLike', 'Feels like')
+    const mainPressure = makeElement('span', 'pressure', 'Pressure')
+    const mainHumidity = makeElement('span', 'humidity', 'Humidity')
+
+    mainDiv.appendChild(mainTemp)
+    mainDiv.appendChild(mainFeels)
+    mainDiv.appendChild(mainHumidity)
+    mainDiv.appendChild(mainPressure)
+    
+    li.appendChild(mainDiv)
+
+    const windDiv = makeElement('div', 'wind')
+    const windDirection = makeElement('span', 'windDirection', "Wind direction")
+    const windSpeed = makeElement('span', 'windSpeed', 'Wind speed')
+    const windGust = makeElement('span', 'windGust', 'Wind gust')
+
+    windDiv.appendChild(windDirection)
+    windDiv.appendChild(windSpeed)
+    windDiv.appendChild(windGust)
+
+    li.appendChild(windDiv)
+
+    const rainDiv = makeElement('div', 'rain')
+    const rain1h = makeElement('span', 'rain1h', "Rain in 1 hour")
+    const rain3h = makeElement('span', 'rain3h', "Rain in 3 hours")
+
+    rainDiv.appendChild(rain1h)
+    rainDiv.appendChild(rain3h)
+
+    li.appendChild(rainDiv)
+
+    const snowDiv = makeElement('div', 'snow')
+    const snow1h = makeElement('span', 'snow1h', "Snow in 1 hour")
+    const snow3h = makeElement('span', 'snow3h', "Snow in 3 hours")
+
+    snowDiv.appendChild(snow1h)
+    snowDiv.appendChild(snow3h)
+
+    li.appendChild(snowDiv)
+
+    return li
+}
+
 function createCurrentWeather(data){
     const div = document.createElement('div')
-    div.classList.add('currentWeather')
+    const h = document.createElement('h2')
+    h.classList.add('head')
+    h.textContent = "Current weather:"
+    div.appendChild(h)
+    div.id = 'weather'
     makeWeatherElements(div, data)
     return div
 }
@@ -127,11 +197,10 @@ function makeWeatherElements(target, weatherDataObj){
                     const img = document.createElement('img')
                     img.alt = weather.description
                     img.src = `http://openweathermap.org/img/wn/${weather.icon}@2x.png`
-                    const span = makeElement('span', 'weatherType', weather.main)
-                    const span2 = makeElement('span', 'weatherDesc', weather.description)
+                    const capitalizedDesc = weather.description.charAt(0).toUpperCase() + weather.description.slice(1)
+                    const span = makeElement('span', 'weatherDesc', capitalizedDesc)
                     weatherDiv.appendChild(img)
                     weatherDiv.appendChild(span)
-                    weatherDiv.appendChild(span2)
                     div.appendChild(weatherDiv)
                 })
                 break
@@ -139,17 +208,19 @@ function makeWeatherElements(target, weatherDataObj){
             case 'wind':{
                 div.classList.add('wind')
                 const img = document.createElement('img')
-                img.classList.add('windDirection')
+                const imgWrap = document.createElement('div')
+                imgWrap.classList.add('windDirection')
                 img.alt = `Wind direction is ${value.deg} degrees off north`
                 img.src = arrow
                 img.style.transform = `rotate(${value.deg}deg)`
-                if(value.gust){
+                const speed = makeElement('span', 'windSpeed', value.speed)
+                imgWrap.appendChild(img)
+                div.appendChild(imgWrap)
+                div.appendChild(speed)
+                if(value.gust !== undefined){
                     const gust = makeElement('span', 'windGust', value.gust)
                     div.appendChild(gust)
                 }
-                const speed = makeElement('span', 'windSpeed', value.speed)
-                div.appendChild(img)
-                div.appendChild(speed)
                 break
             }
             case 'clouds':{
@@ -160,23 +231,23 @@ function makeWeatherElements(target, weatherDataObj){
             }
             case 'rain':{
                 div.classList.add('rain')
-                if(value['1h']){
+                if(value["1h"] !== undefined){
                     const span = makeElement('span', 'rain1h', value['1h'])
                     div.appendChild(span)
                 }
-                if(value['3h']){
-                    const span = makeElement('span', 'rain1h', value['1h'])
+                if(value["3h"] !== undefined){
+                    const span = makeElement('span', 'rain3h', value['3h'])
                     div.appendChild(span)
                 }
                 break
             }
             case 'snow':{
                 div.classList.add('snow')
-                if(value['1h']){
+                if(value['1h']!== 'undefined'){
                     const span = makeElement('span', 'snow1h', value['1h'])
                     div.appendChild(span)
                 }
-                if(value['3h']){
+                if(value['3h']!== 'undefined'){
                     span.classList.add('snow3h')
                     const span = makeElement('span', 'snow1h', value['1h'])
                     div.appendChild(span)
@@ -192,7 +263,9 @@ function makeWeatherElements(target, weatherDataObj){
 function makeElement(type, classlist, data){
     const el = document.createElement(type)
     el.classList.add(classlist)
+    if(data!==undefined){
     el.innerText = data
+    }
     return el
 }
 
@@ -220,5 +293,5 @@ export const UI = {
     createForecast: (data) => createForecast(data),
     cityChooser: (citiesArr) => citiesChooser(citiesArr),
     replaceElement: (target, newElement) => replaceElement(target, newElement),
-    createCurrentWeather: (data) => createCurrentWeather(data)
+    createCurrentWeather: (data) => createCurrentWeather(data),
 }

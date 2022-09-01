@@ -1,14 +1,299 @@
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 #app{
   display: flex;
   flex-direction: column;
-  overflow-y: visible;
+  height: 100vh;
+  overflow-x: hidden; 
 }
 
 #header{
-display: flex;
-place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-height: fit-content;
+  background-color: grey;
+  gap: 1em;
 }
+
+#search::before{
+  content: 'Show weather in location:';
+  align-self: center;
+  width: fit-content;
+}
+
+#cityList::before{
+  content: 'Choose location:';
+  align-self: center;
+  width: fit-content;
+}
+
+#search, #cityList{
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5em;
+  width: 800px;
+  height: 2em;
+}
+
+button{
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+#credit{
+  display: flex;
+  place-items: center;
+}
+
+#credit>img{
+  height: 9vh;
+}
+
+#content{
+  display: flex;
+  height: 100%;
+  width: 100vw;
+  background-color: #bbb;
+}
+
+#content img{
+  height: 3em;
+}
+
+#weather{
+  position: relative;
+  border: 1px solid black;
+  height: 100%;
+  width: fit-content;
+  padding: 0.3em;
+  display: grid;
+  gap: 0.5em;
+  grid-template-areas:
+  'head' 
+  'date'
+  'weather'
+  'clouds'
+  'main'
+  'wind'
+  'rain'
+  'snow';
+  grid-template-rows: 2em 2em 3em 2em 5em 5em 3em 3em 3em;
+}
+
+#weather .head{
+  grid-area: head;
+}
+
+#weather .date{
+  grid-area: date;
+}
+#weather .date::before{
+  content: 'This forecast was made at:'
+}
+
+#weather .weatherGroups{
+  grid-area: weather;
+}
+ #weather .main{
+  grid-area: main;
+ }
+ 
+ #weather .main>.temp::before{
+  content: "Temperature: ";
+ }
+
+ #weather .main>.tempFeelsLike::before{
+  content: 'Feels like: ';
+ }
+
+ .main>.temp::after, .main>.tempFeelsLike::after {
+  content: '°C';
+ }
+
+ #weather .main>.humidity::before{
+  content: "Humidity: ";
+ }
+ .main>.humidity::after{
+  content: '%';
+ }
+
+ #weather .main>.pressure::before{
+  content: "Pressure: ";
+ }
+ .main>.pressure::after{
+  content: "hPa";
+ }
+
+ #weather .main{
+  display: flex;
+  flex-direction: column;
+}
+
+ #weather .wind{
+  grid-area: wind;
+  display: flex;
+  flex-direction: column;
+  
+ }
+ #weather .wind > .windDirection::before{
+  content: "Wind direction: ";
+ }
+ .windDirection{
+  display: flex;
+  place-items: center;
+ }
+
+ #weather .wind > .windSpeed::before{
+  content: 'Wind speed: ';
+ }
+ .wind > .windSpeed::after{
+  content: "m/s";
+ }
+ #weather .wind > .windGust::before{
+  content: "Wind gusts: ";
+ }
+ .wind > .windGust::after{
+  content: "m/s";
+ }
+
+ #weather .clouds{
+  grid-area: clouds;
+ }
+ #weather .clouds>.cloudiness::before{
+  content: 'Cloudiness: ';
+ }
+ .clouds>.cloudiness::after{
+  content: "%";
+}
+
+ #weather .rain{
+  grid-area: rain;
+  display: flex;
+  flex-direction: column;
+ } 
+ #weather .snow{
+  grid-area: snow;
+  display: flex;
+  flex-direction: column;
+ }
+ #weather .rain > .rain1h::before{
+  content: "Rain in 1 hour: ";
+ }
+ #weather .rain > .rain3h::before{
+  content: "Rain in 3 hours: ";
+ }
+ #weather .snow > .snow1h::before{
+  content: "Snow in 1 hour: ";
+ }
+ #weather .snow > .snow3h::before{
+  content: "Snow in 3 hours: ";
+ }
+ .rain>.rain1h::after, .rain>.rain3h::after, .snow>.snow1h::after, .snow>.snow3h::after{
+  content: "mm";
+ }
+
+ .weatherGroups .weather{
+  display: flex;
+  place-items: center;
+ }
+ 
+ #forecast{
+  max-height: 90vh;
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+ #forecast .head{
+  z-index: 1;
+  padding: 0.5em;
+  height: 4em;
+  background-color: #bbb;
+  width: 100%;
+  display: flex;
+  place-content: center;
+ }
+
+#forecast ul{
+  list-style: none;
+}
+ul>li{
+  display: grid;
+  width: fit-content;
+  padding: 0.5em;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  grid-template-areas:
+  "date weather clouds main wind rain snow";
+  /* grid-template-columns: 1fr 1.5fr 1.5fr 4fr 4fr 2fr 2fr; */
+  grid-template-columns: minmax(100px, 1fr) repeat(2, minmax(130px, 1.5fr)) repeat(2, minmax(300px, 4fr)) repeat(2, minmax(150px, 2fr))
+}
+
+ul>li:nth-of-type(odd){
+  background-color: rgba(128, 128, 128, 0.2);
+}
+
+li>.date{
+  grid-area: date;
+}
+li>.weather{
+  grid-area: weather;
+}
+li>.clouds{
+  grid-area: clouds;
+}
+li>.main{
+  grid-area: main;
+  display: grid;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+li>.wind{
+  grid-area: wind;
+  display: grid;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: repeat(3, 1fr);
+}
+li>.rain{
+  grid-area: rain;
+  display: grid;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr);
+}
+li>.snow{
+  grid-area: snow;
+  display: grid;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#content > div#forecast > ul > li.headerLi > div:nth-child(n)::after, 
+#content > div#forecast > ul > li.headerLi > div >span:nth-child(n)::after{
+content: none;  
+}
+#content > div#forecast > ul > li.headerLi{
+  position: sticky;
+  top: 0px;
+  background-color: grey;
+  z-index: 1;
+  margin-left: -5px;
+}
+
