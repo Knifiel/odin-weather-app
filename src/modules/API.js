@@ -54,7 +54,7 @@ export const API = {
 const getCitiesList = async (city) => {
     try {
     if(!checkCache(city)){
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${APIkey}`, {mode: "cors"})
+    const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${APIkey}`, {mode: "cors"})
     if(response.status == 200){
         const responseData = await response.json()
         addToCache(city, responseData)
